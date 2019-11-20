@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as BS
+import codecs
+import time
 
 session = requests.Session()
 headers = {
@@ -7,13 +9,20 @@ headers = {
     'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
 }
 
-url = 'https://www.work.ua/jobs-kyiv-python/'
-req = session.get(url, headers=headers)
-bsObj = BS(req.content, "html.parser")
-data = bsObj.prettify()
+base_url = 'https://www.work.ua/jobs-kyiv-python/'
 
-handle = open('work.html', 'w')
-handle.write(str(data))
-handle.close()
+domain = 'https://www.work.ua'
 
+jobs = []
+urls = []
+urls.append(base_url)
 
+req = session.get(base_url, headers=headers)
+
+if req.status_code == 200:
+    bsObj = BS(req.content, "html.parser")
+    pagination = bsObj.find('ul', attr={'class': 'pagination'})
+    if pagination:
+        pages = pagination.find_all('li', attrs={'class': False})
+        for page in pages:
+            urls.append(domain + page.a['href'])
