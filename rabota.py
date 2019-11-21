@@ -3,17 +3,16 @@ from bs4 import BeautifulSoup as BS
 import codecs
 import time
 import datetime
-
 session = requests.Session()
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 5.1; rv:47.0) Gecko/20100101 Firefox/47.0',
-           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-           }
+           'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    }
 base_url = 'https://rabota.ua/jobsearch/vacancy_list?regionId=1&keyWords=python&period=2&lastdate='
 
 domain = 'https://rabota.ua'
 jobs = []
 urls = []
-yesterday = datetime.date.today() - datetime.timedelta(1)
+yesterday = datetime.date.today()-datetime.timedelta(1)
 one_day_ago = yesterday.strftime('%d.%m.%Y')
 base_url = base_url + one_day_ago
 urls.append(base_url)
@@ -48,10 +47,10 @@ for url in urls:
                 if p:
                     short = p.text
                 jobs.append({'href': domain + href,
-                             'title': title,
-                             'descript': short,
-                             'company': company})
-
+                            'title': title, 
+                            'descript': short,
+                            'company': company})
+    
     # print(div.find('p', attrs={'class': 'overflow'}).text)
 # data = bsObj.prettify()#.encode('utf8')
 template = '<!doctype html><html lang="en"><head><meta charset="utf-8"></head><body>'
@@ -63,4 +62,4 @@ for job in jobs:
 data = template + content + end
 handle = codecs.open('jobs.html', "w", 'utf-8')
 handle.write(str(data))
-handle.close()
+handle.close() 
